@@ -37,7 +37,8 @@ TypeError: f() missing 1 required keyword-only argument: 'b'
 >>> def f(*args, **kwargs, c):
 		print(args, kwargs, c)
 SyntaxError: invalid syntax
-
+```
+```python
 def f(c, x = []):
 	x.append(c)
 	return x
@@ -45,7 +46,8 @@ def f(c, x = []):
 print(f(2)) # [2]
 print(f(3)) # [2, 3]
 print(f(4)) # [2, 3, 4]
-
+```
+```python
 def f(a, b, c = 3):
 	pass
 f(1, b=4, c=6) # но не f(1, 4, b=6) - выкинет исключение!
@@ -58,15 +60,13 @@ f(1, b=4, c=6) # но не f(1, 4, b=6) - выкинет исключение!
 
 Функции, как и классы, могут иметь атрибуты:
 ```python
-
 def a():
 	pass
 ```
 
 ```python
-
-	a.b = 1
-	a.c = a
+a.b = 1
+a.c = a
 ```
 
 **Анонимные функции [(PEP 3107)](https://www.python.org/dev/peps/pep-3107/)**. Для их создания используется ключевое слово: lambda. Содержат одно выражение и выполняются быстрее. Их не обязательно присваивать переменной.
@@ -76,7 +76,7 @@ f = lambda x, y: x + y # x, y - параметры, x + y - возвращаем
 
 Использование без переменной:
 ```python
-	(lambda x, y: x + y)(1, 2) # Возвращает сумму чисел 1 и 2
+(lambda x, y: x + y)(1, 2) # Возвращает сумму чисел 1 и 2
 ```
 У функции есть в частности следующие поля:
 - **__name__** **:** **<class 'str'>** — хранит имя функции (при сохранении функции в переменную, имя останется неизменным). 
@@ -101,7 +101,7 @@ f = lambda x, y: x + y # x, y - параметры, x + y - возвращаем
 **pydoc -w имя_файла создаст** html страницу с документацией.
 
 **Декоратор [(PEP 318)](https://www.python.org/dev/peps/pep-0318/)** - это функция, которая принимает на вход функцию и возвращает новую функцию. Декоратор в питоне представляет собой функцию, которая может изменить поведение другой функции. Это возможно, потому что функции в питоне являются объектами, и их можно передавать в качестве аргументов и возвращать в качестве результатов другой функции.
-```python=
+```python
 @bold
 def hello(who):
 	print("Hello " + who)
@@ -110,7 +110,7 @@ def hello(who):
 При вызове функции hello(who) она сначала передается как аргумент декоратору bold, который должен вернуть некоторую другую функцию, которая должна принять аргумент who, предназначенный для оригинальной функции hello.
 
 Задача, которая ставится при создании функции-декоратора - написать функцию, которая принимает одну функцию, а возвращает другую.
-```python=
+```python
 def bold(fun hello):
 	def inner(who):
 		print("<b>")
@@ -120,13 +120,13 @@ def bold(fun hello):
 ```
 
 Если бы перед def hello(who) не было декоратора, то аналогичный результат можно было получить следующим кодом:
-```python=
+```python
 	hello = bold(hello) # bold заменяет ссылку на hello, подставляет туда функцию inner
 	hello("Igor")
 ```
 
 Одновременно можно применять несколько декораторов. Например, было бы неплохо выделять результат функции hello ещё и тегами <i> и </i>. Для этого нужно определить еще один декоратор italic. Важно соблюдать порядок добавления декораторов к функции.
-```python=
+```python
 def italic(fun_hello):
 	def inner(who):
 		print("<i>")
@@ -140,7 +140,7 @@ print ("Hello " + who)
 ```
 
 Декоратор с параметром, который перед вызовом функции будет засыпать на одну секунду
-```python=
+```python
 def sleep(seconds):
 	"""принимает количество секунд, на которое мы будем засыпать, то есть по сути
 sleep - это некая фабрика декораторов, он сам будет производить декораторы"""
@@ -154,7 +154,7 @@ return decorator
 ```
 
 
-```python=
+```python
 @sleep(1)
 def printer():
 	print("home sweet home")
@@ -177,7 +177,7 @@ def count(f):
 ```
 
 Декораторы могут применяться к классам [(PEP 3129)](https://www.python.org/dev/peps/pep-3129/):
-```python=
+```python
 import functools
 def singleton(cls):
 	"""Make a class a Singleton class (only one instance)"""
@@ -200,13 +200,13 @@ class TheOne:
 При создании экземпляра TheOne будет вызвана функция, созданная в декораторе
 
 Так как класс сам по себе является функцией, а именно класс, как конструктор новых объектов, то можно создать для этого класса функцию-обёртку, которая внутри себя будет производить определённого рода действия, а затем возвращать новый экземпляр этого класса.
-```python=
+```python
 TheOne = singleton(TheOne)
 one = TheOne() # вызов функции wrapper_singleton
 ```
 
 Классы сами могут быть декораторами, для этого в __init__ класса первым аргументом должна приниматься функция, а класс должен реализовывать метод __call__. Кроме этого надо переопределить метод __get__, так как он отвечает за поиск методов и использовать декоратор wraps, чтобы сохранить метаинформацию о функции:
-```python=
+```python
 import types
 from functools import wraps
 
@@ -226,14 +226,14 @@ class DecoratorClass:
 			return types.MethodType(self, instance)
 ```
 
-```python=
+```python
 @DecoratorClass
 def test_function():
 	print("func is called")
 ```
 
 Реализация декораторов classmethod и staticmethod
-```python=
+```python
 class ClassMethod(object):
 	"Emulate PyClassMethod_Type() in Objects/funcobject.c"
 	
@@ -268,7 +268,7 @@ return self.f
 Key-функция - функция, принимает один аргумент и возвращает другое значение, определяющее положение аргумента при сортировке.
 
 Пример:
-```python=
+```python
 import functools
 
 def comparator(x, y):
@@ -345,7 +345,7 @@ import functools
 			return wrapper
 		return decorator
 ```
-```python=
+```python
 import time
 def timer(f):
 	def tmp(*args, **kwargs):
@@ -361,7 +361,7 @@ def func(x, y):
 ```
 
 Декораторы также могут быть и с параметрами:
-```python=
+```python
 #decorator with params
 class log:
 	def __init__(self, prefix):
@@ -381,7 +381,7 @@ def f(x: int, y: int) -> int:
 ```
 
 ### Замыкание в лямбда-функции:
-```python=
+```python
 arr = []
 for i in range(10):
 	arr.append(lambda x: i + x)
